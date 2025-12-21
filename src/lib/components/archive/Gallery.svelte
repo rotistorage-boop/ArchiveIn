@@ -16,7 +16,7 @@
 </script>
 
 <div in:fade={{ duration: 600, easing: quintOut }} class="translate-x-0">
-	<div class="grid grid-cols-3 max-md:grid-cols-2">
+	<div class="grid grid-cols-4 max-md:grid-cols-3">
 		{#each items as item}
 			<button
 				on:click={() => openPhoto(item)}
