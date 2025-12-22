@@ -1,19 +1,11 @@
 <script lang="ts">
-	import { selectedPhoto } from '$lib/stores/archive-navigation';
+	import { openPhoto } from '$lib/stores/archive-navigation';
 	import { fade } from 'svelte/transition';
 	import { quintOut } from 'svelte/easing';
 
 	import type { GalleryGroup } from '$lib/types/gallery';
 
 	export let groups: GalleryGroup[];
-
-	function openPhoto(item: { imageUrl: string; title: string; groupTitle: string }) {
-		selectedPhoto.set({
-			src: item.imageUrl,
-			title: item.title,
-			desc: item.groupTitle
-		});
-	}
 </script>
 
 <div in:fade={{ duration: 600, easing: quintOut }} class="space-y-16">
@@ -21,11 +13,11 @@
 		<section class="space-y-6">
 			<!-- GROUP HEADER -->
 			<div class="space-y-1">
-				<h2 class="text-sm tracking-widest text-gray-500 uppercase">
+				<h2 class="text-sm tracking-widest text-gray-300 uppercase">
 					{group.title}
 				</h2>
 				{#if group.description}
-					<p class="text-xs text-gray-600">{group.description}</p>
+					<p class="text-xs text-gray-500">{group.description}</p>
 				{/if}
 			</div>
 
@@ -35,9 +27,10 @@
 					<button
 						on:click={() =>
 							openPhoto({
-								imageUrl: item.imageUrl,
+								src: item.imageUrl,
 								title: item.title,
-								groupTitle: group.title
+								desc: group.title,
+                                date: item.date // Replaced yearTaken with date
 							})}
 						class="group aspect-square overflow-hidden border-[0.5px] border-gray-900"
 					>

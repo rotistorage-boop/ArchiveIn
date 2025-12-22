@@ -12,7 +12,7 @@
 
 <nav
 	class="fixed top-1/2 left-8 z-50 -translate-y-1/2
-	       max-md:top-0 max-md:right-0 max-md:left-0 max-md:translate-y-0 max-md:bg-gradient-to-b max-md:from-black/70 max-md:to-transparent max-md:backdrop-blur-md"
+	       max-md:top-0 max-md:right-0 max-md:left-0 max-md:translate-y-0 max-md:bg-linear-to-b max-md:from-black/70 max-md:to-transparent max-md:backdrop-blur-md"
 >
 	<div
 		class="flex gap-12 [writing-mode:vertical-rl]

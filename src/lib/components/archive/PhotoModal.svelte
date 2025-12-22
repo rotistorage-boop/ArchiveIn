@@ -52,6 +52,9 @@
 			</div>
 			<div class="text-xs tracking-[0.12em] text-gray-400">
 				{$selectedPhoto.desc}
+				{#if $selectedPhoto.date}
+					<span>| {$selectedPhoto.date}</span>
+				{/if}
 			</div>
 		</div>
 	</div>
