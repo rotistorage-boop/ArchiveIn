@@ -14,22 +14,19 @@ import {
 	galleryGroup,
 	galleryItem
 } from './schema';
+import type { InferSelectModel } from 'drizzle-orm'; // Added import
 
-async function seed() {
-	console.log('🌱 Seeding database with dotenv...');
-
-	/* =========================
-	   USER
-	========================= */
+async function seedUsers() {
+	console.log('  Seeding users...');
 	await db.insert(user).values({
 		id: 'admin',
 		username: 'roti18',
 		passwordHash: 'hashed-password'
 	});
+}
 
-	/* =========================
-	   SEMESTER
-	========================= */
+async function seedSemesters() {
+	console.log('  Seeding semesters...');
 	const [sem1] = await db
 		.insert(semester)
 		.values({
@@ -47,27 +44,28 @@ async function seed() {
 			endYear: 2024
 		})
 		.returning();
+	return { sem1, sem2 };
+}
 
-	/* =========================
-	   MATA KULIAH (SESUI DATA LO)
-	========================= */
+async function seedMataKuliahs(sem1Id: number, sem2Id: number) {
+	console.log('  Seeding mata kuliahs...');
 	const matkulList = [
 		// Gasal 2024
-		{ semesterId: sem1.id, code: 'IF2212', name: 'Matematika Teknik' },
-		{ semesterId: sem1.id, code: 'IF2217', name: 'Matematika Diskret' },
-		{ semesterId: sem1.id, code: 'UNG109', name: 'Bahasa Indonesia' },
-		{ semesterId: sem1.id, code: 'UNG120', name: 'Pancasila' },
-		{ semesterId: sem1.id, code: 'IF2211', name: 'Pengantar Teknologi Informasi' },
-		{ semesterId: sem1.id, code: 'UNG101', name: 'Pendidikan Agama Islam' },
-		{ semesterId: sem1.id, code: 'UNG110', name: 'Bahasa Inggris' },
+		{ semesterId: sem1Id, code: 'IF2212', name: 'Matematika Teknik' },
+		{ semesterId: sem1Id, code: 'IF2217', name: 'Matematika Diskret' },
+		{ semesterId: sem1Id, code: 'UNG109', name: 'Bahasa Indonesia' },
+		{ semesterId: sem1Id, code: 'UNG120', name: 'Pancasila' },
+		{ semesterId: sem1Id, code: 'IF2211', name: 'Pengantar Teknologi Informasi' },
+		{ semesterId: sem1Id, code: 'UNG101', name: 'Pendidikan Agama Islam' },
+		{ semesterId: sem1Id, code: 'UNG110', name: 'Bahasa Inggris' },
 
 		// Genap 2024
-		{ semesterId: sem2.id, code: 'IF2215', name: 'Metode Statistika' },
-		{ semesterId: sem2.id, code: 'IF2216', name: 'Komputasi Aljabar Linier' },
-		{ semesterId: sem2.id, code: 'IF2213', name: 'Algoritma & Dasar Pemrograman' },
-		{ semesterId: sem2.id, code: 'IF2219', name: 'Dasar Pemrograman Web' },
-		{ semesterId: sem2.id, code: 'UNG118', name: 'Kewarganegaraan' },
-		{ semesterId: sem2.id, code: 'IF2218', name: 'Organisasi Komputer & Sistem Operasi' }
+		{ semesterId: sem2Id, code: 'IF2215', name: 'Metode Statistika' },
+		{ semesterId: sem2Id, code: 'IF2216', name: 'Komputasi Aljabar Linier' },
+		{ semesterId: sem2Id, code: 'IF2213', name: 'Algoritma & Dasar Pemrograman' },
+		{ semesterId: sem2Id, code: 'IF2219', name: 'Dasar Pemrograman Web' },
+		{ semesterId: sem2Id, code: 'UNG118', name: 'Kewarganegaraan' },
+		{ semesterId: sem2Id, code: 'IF2218', name: 'Organisasi Komputer & Sistem Operasi' }
 	];
 
 	const matkulInserted = await db
@@ -80,10 +78,13 @@ async function seed() {
 			}))
 		)
 		.returning();
+	return matkulInserted;
+}
 
-	/* =========================
-	   ITEM + BLOCK + PRAKTIKUM
-	========================= */
+async function seedAcademicItemsPraktikums(
+	matkulInserted: (InferSelectModel<typeof mataKuliah> & { id: number })[]
+) {
+	console.log('  Seeding academic items and praktikums...');
 	for (const mk of matkulInserted) {
 		const [item] = await db
 			.insert(academicItem)
@@ -153,10 +154,10 @@ async function seed() {
 			mataKuliahId: mk.id
 		});
 	}
+}
 
-	/* =========================
-	   GALLERY
-	========================= */
+async function seedGallery() {
+	console.log('  Seeding gallery...');
 	const [group] = await db
 		.insert(galleryGroup)
 		.values({
@@ -170,9 +171,17 @@ async function seed() {
 		title: 'Suasana Kelas',
 		description: 'Kegiatan perkuliahan',
 		imageUrl: 'https://picsum.photos/800/600',
-		date: '15/03/2024' // Replaced yearTaken with date
+		date: '15/03/2024'
 	});
+}
 
+async function seed() {
+	console.log('🌱 Seeding database with dotenv...');
+	await seedUsers();
+	const { sem1, sem2 } = await seedSemesters();
+	const matkulInserted = await seedMataKuliahs(sem1.id, sem2.id);
+	await seedAcademicItemsPraktikums(matkulInserted);
+	await seedGallery();
 	console.log('✅ Seed selesai (dotenv aktif)');
 	process.exit(0);
 }
