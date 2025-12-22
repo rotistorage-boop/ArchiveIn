@@ -9,6 +9,7 @@ import {
 	academicItemBlock,
 	praktikum,
 	praktikumItem,
+	praktikumItemBlock,
 	asprak,
 	galleryGroup,
 	galleryItem
@@ -120,13 +121,32 @@ async function seed() {
 			})
 			.returning();
 
-		await db.insert(praktikumItem).values({
-			praktikumId: prak.id,
-			type: 'tugas_praktikum',
-			title: 'Tugas Praktikum 1',
-			link: 'https://drive.google.com/file/praktikum',
-			linkPlatform: 'gdrive'
-		});
+		const [prakItem] = await db
+			.insert(praktikumItem)
+			.values({
+				praktikumId: prak.id,
+				type: 'tugas_praktikum',
+				title: 'Tugas Praktikum 1',
+				link: 'https://drive.google.com/file/praktikum',
+				linkPlatform: 'gdrive'
+			})
+			.returning();
+
+		await db.insert(praktikumItemBlock).values([
+			{
+				itemId: prakItem.id,
+				type: 'text',
+				content: 'Ini adalah deskripsi untuk tugas praktikum.',
+				order: 0
+			},
+			{
+				itemId: prakItem.id,
+				type: 'image',
+				imageUrl: 'https://picsum.photos/1200/800',
+				caption: 'Gambar untuk praktikum',
+				order: 1
+			}
+		]);
 
 		await db.insert(asprak).values({
 			name: 'Asprak Default',
@@ -150,7 +170,7 @@ async function seed() {
 		title: 'Suasana Kelas',
 		description: 'Kegiatan perkuliahan',
 		imageUrl: 'https://picsum.photos/800/600',
-		yearTaken: 2024
+		date: '15/03/2024' // Replaced yearTaken with date
 	});
 
 	console.log('✅ Seed selesai (dotenv aktif)');

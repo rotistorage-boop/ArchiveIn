@@ -8,7 +8,7 @@ export async function getGallery() {
 					id: true,
 					title: true,
 					imageUrl: true,
-					yearTaken: true
+					date: true
 				}
 			}
 		}
