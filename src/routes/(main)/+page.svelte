@@ -2,6 +2,7 @@
 	import Navigation from '$lib/components/archive/Navigation.svelte';
 	import CursorTrail from '$lib/components/archive/CursorTrail.svelte';
 	import ArchiveList from '$lib/components/archive/ArchiveList.svelte';
+	import Detail from '$lib/components/archive/Detail.svelte';
 	import Gallery from '$lib/components/archive/Gallery.svelte';
 	import PhotoModal from '$lib/components/archive/PhotoModal.svelte';
 	import { currentPage, initializeArchive } from '$lib/stores/archive-navigation';
@@ -28,12 +29,13 @@
 	<div
 		class="ml-32 min-h-screen p-12
 		       max-md:ml-0 max-md:flex max-md:flex-col
-		       max-md:items-center max-md:p-6 max-md:px-4 max-md:pt-20"
+		       max-md:p-6 max-md:px-4 max-md:pt-20"
 	>
 		{#if $currentPage === 'gallery'}
 			<Gallery groups={data.gallery} />
+		{:else if $currentPage === 'detail'}
+			<Detail />
 		{:else}
-			<!-- 🔥 INI SELALU 1 COMPONENT -->
 			<ArchiveList />
 		{/if}
 	</div>
