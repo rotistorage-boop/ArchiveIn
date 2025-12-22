@@ -7,6 +7,11 @@ export interface ArchiveItem {
 	children?: ArchiveItem[];
 	description?: string;
 	documentation?: DocumentationItem[];
+	link?: string; // Added
+	linkPlatform?: string; // Added
+	dosen?: string; // Added
+	jam?: string; // Added
+	aspraks?: { name: string }[]; // Added
 }
 
 export interface DocumentationItem {

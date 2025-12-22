@@ -27,10 +27,14 @@ export type AcademicItem = InferSelectModel<typeof academicItem> & {
    PRAKTIKUM
 ========================= */
 
-export type PraktikumItem = InferSelectModel<typeof praktikumItem>;
+export type PraktikumItemBlock = InferSelectModel<typeof praktikumItemBlock>;
+
+export type PraktikumItem = InferSelectModel<typeof praktikumItem> & {
+	blocks: PraktikumItemBlock[];
+};
 
 export type Praktikum = InferSelectModel<typeof praktikum> & {
-	items: PraktikumItem[];
+	praktikumItems: PraktikumItem[];
 };
 
 /* =========================
@@ -57,7 +61,11 @@ export type Semester = InferSelectModel<typeof semester> & {
 	mataKuliahs: MataKuliah[];
 };
 
-export type MataKuliahForArchive = Pick<InferSelectModel<typeof mataKuliah>, 'id' | 'name'>;
+export type MataKuliahForArchive = InferSelectModel<typeof mataKuliah> & {
+	academicItems: AcademicItem[];
+	praktikums: Praktikum[];
+	aspraks: Asprak[]; // Added
+};
 
 export type SemesterForArchive = Pick<
 	InferSelectModel<typeof semester>,
