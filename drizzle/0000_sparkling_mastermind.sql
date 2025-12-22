@@ -70,6 +70,17 @@ CREATE TABLE `praktikum_item` (
 	FOREIGN KEY (`praktikum_id`) REFERENCES `praktikum`(`id`) ON UPDATE no action ON DELETE cascade
 );
 --> statement-breakpoint
+CREATE TABLE `praktikum_item_block` (
+	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
+	`item_id` integer NOT NULL,
+	`type` text NOT NULL,
+	`content` text,
+	`image_url` text,
+	`caption` text,
+	`order` integer NOT NULL,
+	FOREIGN KEY (`item_id`) REFERENCES `praktikum_item`(`id`) ON UPDATE no action ON DELETE cascade
+);
+--> statement-breakpoint
 CREATE TABLE `semester` (
 	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
 	`name` text NOT NULL,

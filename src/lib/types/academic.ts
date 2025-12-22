@@ -6,6 +6,7 @@ import {
 	academicItemBlock,
 	praktikum,
 	praktikumItem,
+	praktikumItemBlock,
 	asprak
 } from '$lib/server/db/schema';
 
@@ -14,6 +15,8 @@ import {
 ========================= */
 
 export type AcademicItemBlock = InferSelectModel<typeof academicItemBlock>;
+export type PraktikumItemBlock = InferSelectModel<typeof praktikumItemBlock>;
+
 
 /* =========================
    ITEM
@@ -23,14 +26,16 @@ export type AcademicItem = InferSelectModel<typeof academicItem> & {
 	blocks: AcademicItemBlock[];
 };
 
+export type PraktikumItem = InferSelectModel<typeof praktikumItem> & {
+	blocks: PraktikumItemBlock[];
+};
+
 /* =========================
    PRAKTIKUM
 ========================= */
 
-export type PraktikumItem = InferSelectModel<typeof praktikumItem>;
-
 export type Praktikum = InferSelectModel<typeof praktikum> & {
-	items: PraktikumItem[];
+	praktikumItems: PraktikumItem[];
 };
 
 /* =========================
@@ -43,25 +48,18 @@ export type Asprak = InferSelectModel<typeof asprak>;
    MATA KULIAH
 ========================= */
 
-export type MataKuliah = InferSelectModel<typeof mataKuliah> & {
-	items: AcademicItem[];
-	praktikum?: Praktikum | null;
-	asprak?: Asprak[];
+// This type reflects the exact structure returned by the deep query in getArchiveOverview
+export type MataKuliahForArchive = InferSelectModel<typeof mataKuliah> & {
+	academicItems: AcademicItem[];
+	praktikums: Praktikum[];
+	aspraks: Asprak[];
 };
 
 /* =========================
    SEMESTER
 ========================= */
 
-export type Semester = InferSelectModel<typeof semester> & {
-	mataKuliahs: MataKuliah[];
-};
-
-export type MataKuliahForArchive = Pick<InferSelectModel<typeof mataKuliah>, 'id' | 'name'>;
-
-export type SemesterForArchive = Pick<
-	InferSelectModel<typeof semester>,
-	'id' | 'name' | 'startYear' | 'endYear'
-> & {
+// This type reflects the exact structure returned by the deep query in getArchiveOverview
+export type SemesterForArchive = InferSelectModel<typeof semester> & {
 	mataKuliahs: MataKuliahForArchive[];
 };

@@ -11,6 +11,7 @@ export interface PhotoData {
 	src: string;
 	title: string;
 	desc: string;
+	date?: string;
 }
 
 /* =========================
@@ -41,8 +42,8 @@ export function initializeArchive(data: ArchiveItem[]) {
 export function navigateTo(path: string[]) {
 	let items = initialArchiveData;
 
-	for (const id of path) {
-		const item = items.find((i) => i.id === id);
+	for (const title of path) {
+		const item = items.find((i) => i.title === title);
 		if (item && item.children) {
 			items = item.children;
 		} else {
@@ -62,14 +63,14 @@ export function selectItem(item: ArchiveItem) {
 
 	// CASE 1: MASUK LEVEL BARU
 	if (item.children && item.children.length > 0) {
-		const newPath = [...path, item.id];
+		const newPath = [...path, item.title!];
 		navigateTo(newPath);
 		return;
 	}
 
 	// CASE 2: ITEM DETAIL
 	selectedDetail.set(item);
-	currentItems.set([item]); // 🔑 BIAR UI BERUBAH
+	currentItems.set([item]);
 	currentPage.set('detail');
 }
 

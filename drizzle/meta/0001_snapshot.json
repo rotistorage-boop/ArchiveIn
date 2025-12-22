@@ -1,8 +1,8 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "59f60376-b5f4-49ee-82dc-59c15ff0ed7b",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "5f3f5d38-a815-4958-96f2-97f511b21f74",
+  "prevId": "59f60376-b5f4-49ee-82dc-59c15ff0ed7b",
   "tables": {
     "academic_item": {
       "name": "academic_item",
@@ -264,9 +264,9 @@
           "notNull": true,
           "autoincrement": false
         },
-        "year_taken": {
-          "name": "year_taken",
-          "type": "integer",
+        "date": {
+          "name": "date",
+          "type": "text",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -670,7 +670,9 @@
   "_meta": {
     "schemas": {},
     "tables": {},
-    "columns": {}
+    "columns": {
+      "\"gallery_item\".\"year_taken\"": "\"gallery_item\".\"date\""
+    }
   },
   "internal": {
     "indexes": {}

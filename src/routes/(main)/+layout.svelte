@@ -9,7 +9,7 @@
 
 	onMount(() => {
 		lenis = new Lenis({
-			duration: 1.2,
+			duration: 1.1,
 			easing: (t) => 1 - Math.pow(1 - t, 3),
 			smoothWheel: true,
 			wheelMultiplier: 1,

@@ -7,7 +7,11 @@ export async function getPraktikumByMatkul(mataKuliahId: number): Promise<Prakti
 	const result = await db.query.praktikum.findFirst({
 		where: eq(praktikum.mataKuliahId, mataKuliahId),
 		with: {
-			items: true
+			praktikumItems: {
+				with: {
+					blocks: true
+				}
+			}
 		}
 	});
 
