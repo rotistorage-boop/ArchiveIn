@@ -9,7 +9,8 @@ export async function getAcademicItemDetail(id: number): Promise<AcademicItem | 
 		with: {
 			blocks: {
 				orderBy: [asc(academicItemBlock.order)]
-			}
+			},
+			links: true
 		}
 	});
 
