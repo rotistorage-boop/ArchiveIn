@@ -9,7 +9,8 @@ export async function getPraktikumByMatkul(mataKuliahId: number): Promise<Prakti
 		with: {
 			praktikumItems: {
 				with: {
-					blocks: true
+					blocks: true,
+					links: true
 				}
 			}
 		}
