@@ -100,9 +100,9 @@ async function seedAcademicItemsPraktikums(
 				mataKuliahId: mk.id,
 				type: 'tugas',
 				title: `${mk.name} — Tugas 1`,
-				heroImage: null,
-				link: 'https://drive.google.com/file/example',
-				linkPlatform: 'gdrive'
+				heroImageWebpUrl: null,
+				heroImageOriginalUrl: null,
+				heroImageFileId: null
 			})
 			.returning();
 
@@ -116,11 +116,21 @@ async function seedAcademicItemsPraktikums(
 			{
 				itemId: item.id,
 				type: 'image',
-				imageUrl: 'https://picsum.photos/1200/800',
+				imageWebpUrl: 'https://picsum.photos/1200/800.webp',
+				imageOriginalUrl: 'https://picsum.photos/1200/800', // Dummy
 				caption: 'Screenshot tugas',
 				order: 1
 			}
 		]);
+
+		// Insert Link
+		const { academicItemLink } = await import('./schema');
+		await db.insert(academicItemLink).values({
+			itemId: item.id,
+			title: 'Google Drive',
+			url: 'https://drive.google.com/file/example',
+			platform: 'gdrive'
+		});
 
 		const [prak] = await db
 			.insert(praktikum)
@@ -135,11 +145,18 @@ async function seedAcademicItemsPraktikums(
 			.values({
 				praktikumId: prak.id,
 				type: 'tugas_praktikum',
-				title: 'Tugas Praktikum 1',
-				link: 'https://drive.google.com/file/praktikum',
-				linkPlatform: 'gdrive'
+				title: 'Tugas Praktikum 1'
 			})
 			.returning();
+
+		// Insert Link
+		const { praktikumItemLink } = await import('./schema');
+		await db.insert(praktikumItemLink).values({
+			itemId: prakItem.id,
+			title: 'Drive Praktikum',
+			url: 'https://drive.google.com/file/praktikum',
+			platform: 'gdrive'
+		});
 
 		await db.insert(praktikumItemBlock).values([
 			{
@@ -151,7 +168,8 @@ async function seedAcademicItemsPraktikums(
 			{
 				itemId: prakItem.id,
 				type: 'image',
-				imageUrl: 'https://picsum.photos/1200/800',
+				imageWebpUrl: 'https://picsum.photos/1200/800.webp',
+				imageOriginalUrl: 'https://picsum.photos/1200/800',
 				caption: 'Gambar untuk praktikum',
 				order: 1
 			}
@@ -178,7 +196,9 @@ async function seedGallery() {
 		groupId: group.id,
 		title: 'Suasana Kelas',
 		description: 'Kegiatan perkuliahan',
-		imageUrl: 'https://picsum.photos/800/600',
+		imageWebpUrl: 'https://picsum.photos/800/600.webp',
+		imageOriginalUrl: 'https://picsum.photos/800/600',
+		imagekitFileId: 'dummy_file_id',
 		date: '15/03/2024'
 	});
 }

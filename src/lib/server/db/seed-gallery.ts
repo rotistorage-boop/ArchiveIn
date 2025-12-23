@@ -60,7 +60,9 @@ async function seedGalleryExtra() {
 			return {
 				...item,
 				description: `Documentation — ${item.title}`,
-				imageUrl: `https://picsum.photos/seed/gallery-${i + 20}/800/800`,
+				imageWebpUrl: `https://picsum.photos/seed/gallery-${i + 20}/800/800.webp`,
+				imageOriginalUrl: `https://picsum.photos/seed/gallery-${i + 20}/800/800`,
+				imagekitFileId: `dummy_seed_id_${i}`,
 				date: date.toISOString().split('T')[0]
 			};
 		})
