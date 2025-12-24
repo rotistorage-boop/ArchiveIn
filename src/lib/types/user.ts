@@ -4,10 +4,12 @@ export type UserRole = 'user' | 'admin';
 
 export interface User {
 	id: string;
-	username: string;
 	email: string;
+	name?: string | null;
+	avatar?: string | null;
 	role?: string;
-	passwordHash?: string;
+	googleId?: string | null;
+	createdAt?: Date | null;
 }
 
 export interface UserWithLastLogin extends User {
@@ -21,7 +23,8 @@ export interface Session {
 }
 
 export interface SessionWithDetails extends Session {
-	username: string;
+	userEmail: string;
+	userName: string | null;
 	device: string;
 }
 

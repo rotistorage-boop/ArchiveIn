@@ -34,7 +34,7 @@
 				<h3 id="modal-title" class="text-lg font-semibold text-white">{title}</h3>
 				<button
 					on:click={() => (show = false)}
-					class="text-zinc-400 transition-colors hover:text-white"
+					class="cursor-pointer text-zinc-400 transition-colors hover:text-white"
 					aria-label="Close modal"
 					type="button"
 				>

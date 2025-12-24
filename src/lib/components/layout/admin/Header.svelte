@@ -8,17 +8,6 @@
 	export let mobileMenuOpen: boolean = false;
 	export let user: User | undefined = undefined;
 
-	let searchQuery: string = '';
-	let searchFocused: boolean = false;
-
-	async function handleSearch(e: Event): Promise<void> {
-		e.preventDefault();
-		if (!searchQuery.trim()) return;
-
-		// Global search - redirect to search results
-		await goto(`/dashboard?search=${encodeURIComponent(searchQuery)}`);
-	}
-
 	function toggleMenu(): void {
 		mobileMenuOpen = !mobileMenuOpen;
 	}
@@ -40,37 +29,22 @@
 			{/if}
 		</button>
 
-		<!-- Global Search -->
-		<form on:submit={handleSearch} class="mx-auto max-w-2xl flex-1">
-			<div class="relative">
-				<Search
-					class="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 transform {searchFocused
-						? 'text-white'
-						: 'text-zinc-500'} pointer-events-none"
-				/>
-				<input
-					type="text"
-					bind:value={searchQuery}
-					on:focus={() => (searchFocused = true)}
-					on:blur={() => (searchFocused = false)}
-					placeholder="Search users, gallery, archives..."
-					class="w-full rounded-lg border border-zinc-800 bg-zinc-900 py-2 pr-4 pl-10 text-sm text-white placeholder-zinc-500 transition-colors focus:border-white focus:outline-none"
-				/>
-			</div>
-		</form>
-
 		<!-- Desktop User Profile (compact) -->
 		{#if user}
-			<div class="hidden items-center gap-3 lg:flex">
+			<div class="ml-auto hidden items-center gap-3 lg:flex">
 				<div class="text-right">
-					<p class="text-sm font-medium text-white">{user.username}</p>
+					<p class="text-sm font-medium text-white">{user.name || user.email}</p>
 					<p class="text-xs text-zinc-500 capitalize">{user.role}</p>
 				</div>
-				<div
-					class="flex h-8 w-8 items-center justify-center rounded-full bg-zinc-800 text-sm font-bold text-white"
-				>
-					{user.username.charAt(0).toUpperCase()}
-				</div>
+				{#if user.avatar}
+					<img src={user.avatar} alt="" class="h-8 w-8 rounded-full" />
+				{:else}
+					<div
+						class="flex h-8 w-8 items-center justify-center rounded-full bg-zinc-800 text-sm font-bold text-white"
+					>
+						{(user.name || user.email).charAt(0).toUpperCase()}
+					</div>
+				{/if}
 			</div>
 		{/if}
 	</div>

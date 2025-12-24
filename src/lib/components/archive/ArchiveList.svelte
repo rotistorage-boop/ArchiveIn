@@ -15,7 +15,7 @@
 		<div class="mb-4">
 			<button
 				on:click={goBack}
-				class="flex items-center gap-1 text-xs tracking-[0.35em] text-gray-400
+				class="flex cursor-pointer items-center gap-1 text-xs tracking-[0.35em] text-gray-400
 				       transition-colors duration-300 hover:text-white
 				       max-md:text-[0.7rem]"
 			>
@@ -32,7 +32,7 @@
 		{#each $currentItems as item (item.id)}
 			<button
 				on:click={() => handleItemClick(item)}
-				class="group grid grid-cols-[1fr_40px] gap-12
+				class="group grid cursor-pointer grid-cols-[1fr_40px] gap-12
 				       border-b border-white/8 py-4
 				       transition-all duration-450 ease-in-out
 				       hover:translate-x-1.5 hover:bg-gray-400/5

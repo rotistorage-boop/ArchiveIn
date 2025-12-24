@@ -10,7 +10,7 @@ export interface SessionWithUser {
 	expiresAt: Date;
 	user: {
 		id: string;
-		username: string;
+		name: string | null;
 		email: string;
 	};
 }

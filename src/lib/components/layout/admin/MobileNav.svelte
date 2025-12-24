@@ -29,7 +29,7 @@
 
 	function handleLogout(): void {
 		closeMenu();
-		window.location.href = '/login';
+		window.location.href = '/logout';
 	}
 
 	function handleKeydown(e: KeyboardEvent): void {
@@ -57,7 +57,7 @@
 		<!-- Logo -->
 		<div class="border-b border-zinc-800 p-6">
 			<a href="/" on:click={closeMenu} class="block">
-				<h1 class="text-xl font-bold text-white">CAMPUS LIFE</h1>
+				<h1 class="text-xl font-bold text-white">ARCHIVEIN</h1>
 			</a>
 		</div>
 
@@ -82,13 +82,17 @@
 		<!-- User Profile -->
 		<div class="border-t border-zinc-800 p-4">
 			<div class="mb-3 flex items-center gap-3">
-				<div
-					class="flex h-10 w-10 items-center justify-center rounded-full bg-zinc-800 text-sm font-medium text-white"
-				>
-					{user.username.charAt(0).toUpperCase()}
-				</div>
+				{#if user.avatar}
+					<img src={user.avatar} alt="" class="h-10 w-10 rounded-full" />
+				{:else}
+					<div
+						class="flex h-10 w-10 items-center justify-center rounded-full bg-zinc-800 text-sm font-medium text-white"
+					>
+						{(user.name || user.email).charAt(0).toUpperCase()}
+					</div>
+				{/if}
 				<div class="min-w-0 flex-1">
-					<p class="truncate text-sm font-medium text-white">{user.username}</p>
+					<p class="truncate text-sm font-medium text-white">{user.name || 'Admin'}</p>
 					<p class="truncate text-xs text-zinc-500">{user.email}</p>
 				</div>
 			</div>

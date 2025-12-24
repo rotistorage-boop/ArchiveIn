@@ -129,7 +129,7 @@
 
 		<button
 			on:click={handleBack}
-			class="flex items-center gap-1 text-xs tracking-[0.35em] text-gray-400 transition-colors duration-300 hover:text-white max-md:text-[0.7rem]"
+			class="flex cursor-pointer items-center gap-1 text-xs tracking-[0.35em] text-gray-400 transition-colors duration-300 hover:text-white max-md:text-[0.7rem]"
 		>
 			<ArrowLeft size={14} /> BACK TO ARCHIVE
 		</button>

@@ -1,57 +1,48 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
-	import { page } from '$app/stores';
-	import { Users, Lock } from '@lucide/svelte';
-
-	let username = '';
-	let password = '';
-
-	let form = $page.form;
 </script>
 
-<div class="flex min-h-screen items-center justify-center bg-gray-950">
-	<div class="w-full max-w-md rounded-lg border border-zinc-800 bg-zinc-950 p-8 shadow-lg">
-		<h1 class="mb-6 text-center text-3xl font-bold text-white">Login</h1>
-		<form method="POST" action="?/login" use:enhance>
-			<div class="mb-4">
-				<label for="username" class="mb-2 block text-sm font-medium text-zinc-300">Username</label>
-				<div class="relative">
-					<span class="absolute inset-y-0 left-0 flex items-center pl-3">
-						<Users class="h-5 w-5 text-zinc-500" />
-					</span>
-					<input
-						type="text"
-						id="username"
-						name="username"
-						bind:value={username}
-						class="w-full rounded-lg border border-zinc-800 bg-zinc-900 py-2 pr-3 pl-10 text-white placeholder-zinc-500 focus:border-white focus:outline-none"
-						placeholder="Enter your username"
-						required
-					/>
-				</div>
+<div class="flex min-h-screen flex-col items-center justify-center bg-black p-4 text-center">
+	<div class="animate-in fade-in zoom-in-95 w-full max-w-sm duration-500">
+		<div class="mb-16 space-y-4">
+			<h1 class="cursor-hover text-6xl font-black tracking-tighter text-white">ArchiveIn</h1>
+			<div class="flex items-center justify-center gap-2">
+				<div class="h-px w-8 bg-zinc-800"></div>
+				<p class="text-xs font-semibold tracking-[0.3em] text-zinc-500 uppercase">ACCESS CONTROL</p>
+				<div class="h-px w-8 bg-zinc-800"></div>
 			</div>
-			<div class="mb-6">
-				<label for="password" class="mb-2 block text-sm font-medium text-zinc-300">Password</label>
-				<div class="relative">
-					<span class="absolute inset-y-0 left-0 flex items-center pl-3">
-						<Lock class="h-5 w-5 text-zinc-500" />
-					</span>
-					<input
-						type="password"
-						id="password"
-						name="password"
-						bind:value={password}
-						class="w-full rounded-lg border border-zinc-800 bg-zinc-900 py-2 pr-3 pl-10 text-white placeholder-zinc-500 focus:border-white focus:outline-none"
-						placeholder="Enter your password"
-						required
-					/>
-				</div>
-			</div>
-			<button
-				type="submit"
-				class="w-full rounded-lg bg-white py-2 text-base font-medium text-black transition-colors hover:bg-zinc-200"
-				>Login</button
+		</div>
+
+		<a
+			href="/login/google"
+			class="group relative mx-auto flex w-full max-w-[280px] items-center justify-center gap-3 overflow-hidden rounded-full border border-zinc-800 bg-black px-6 py-4 transition-all duration-300 hover:border-white hover:bg-white"
+		>
+			<svg class="h-5 w-5 transition-transform group-hover:scale-110" viewBox="0 0 24 24">
+				<path
+					d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+					class="fill-[#4285F4]"
+				/>
+				<path
+					d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+					class="fill-[#34A853]"
+				/>
+				<path
+					d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.26.81-.58z"
+					class="fill-[#FBBC05]"
+				/>
+				<path
+					d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+					class="fill-[#EA4335]"
+				/>
+			</svg>
+			<span class="font-bold text-white transition-colors group-hover:text-black"
+				>Continue with Google</span
 			>
-		</form>
+		</a>
+
+		<p class="mt-12 text-xs leading-relaxed text-zinc-600">
+			Restricted Access for <span class="text-zinc-400">@trunojoyo.ac.id</span>
+			<br />
+			<span class="opacity-50">ArchiveIn v1.0</span>
+		</p>
 	</div>
 </div>
