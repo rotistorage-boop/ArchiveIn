@@ -1,30 +1,44 @@
 <script lang="ts">
-	import { Search, Edit2 } from '@lucide/svelte';
+	import { Search, Edit2, Trash2 } from '@lucide/svelte';
 	import type { UserWithLastLogin } from '$lib/types/user';
 	import type { PageData } from './$types';
-	import { goto } from '$app/navigation';
-	import { Input } from '$lib/components/ui';
+	import { goto, invalidateAll } from '$app/navigation';
+	import { enhance } from '$app/forms';
+	import { Input, Button } from '$lib/components/ui';
+	import DeleteConfirmation from '$lib/components/ui/crud/DeleteConfirmation.svelte';
 	import * as Table from '$lib/components/ui/table';
 
 	export let data: PageData;
 
 	let searchQuery: string = '';
+	let showDeleteModal = false;
+	let userToDelete: UserWithLastLogin | null = null;
 
 	const users: UserWithLastLogin[] = data?.users || [];
 
 	$: filteredUsers = users.filter(
 		(u: UserWithLastLogin) =>
-			u.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
+			(u.name || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
 			u.email.toLowerCase().includes(searchQuery.toLowerCase())
 	);
 
 	function handleEdit(user: UserWithLastLogin) {
 		goto(`/dashboard/users/update/${user.id}`);
 	}
+
+	function confirmDelete(user: UserWithLastLogin) {
+		userToDelete = user;
+		showDeleteModal = true;
+	}
+
+	function cancelDelete() {
+		showDeleteModal = false;
+		userToDelete = null;
+	}
 </script>
 
 <svelte:head>
-	<title>User Management - Campus Life</title>
+	<title>User Management | ArchiveIn</title>
 </svelte:head>
 
 <div class="space-y-6 p-6 lg:p-8">
@@ -58,13 +72,25 @@
 					<Table.Row class="transition-colors hover:bg-zinc-900">
 						<Table.Cell>
 							<div class="flex items-center">
-								<div
-									class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-zinc-800 text-sm font-medium text-white"
-								>
-									{user.username.charAt(0).toUpperCase()}
-								</div>
+								{#if user.avatar && user.avatar.length > 0}
+									<img
+										src={user.avatar}
+										alt=""
+										class="h-8 w-8 rounded-full object-cover"
+										on:error={(e) => {
+											(e.currentTarget as HTMLImageElement).style.display = 'none';
+										}}
+									/>
+								{/if}
+								{#if !user.avatar || user.avatar.length === 0}
+									<div
+										class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-zinc-800 text-sm font-medium text-white"
+									>
+										{(user.name || user.email).charAt(0).toUpperCase()}
+									</div>
+								{/if}
 								<div class="ml-3 min-w-0">
-									<p class="truncate text-sm font-medium text-white">{user.username}</p>
+									<p class="truncate text-sm font-medium text-white">{user.name || user.email}</p>
 									<p class="truncate text-xs text-zinc-500 sm:hidden">{user.email}</p>
 								</div>
 							</div>
@@ -81,14 +107,26 @@
 						</Table.Cell>
 						<Table.Cell class="hidden text-zinc-400 md:table-cell">{user.lastLogin}</Table.Cell>
 						<Table.Cell class="text-right">
-							<button
-								on:click={() => handleEdit(user)}
-								class="p-1 text-zinc-400 transition-colors hover:text-white"
-								aria-label="Edit user {user.username}"
-								type="button"
-							>
-								<Edit2 class="h-4 w-4" />
-							</button>
+							<div class="flex items-center justify-end gap-1">
+								<Button
+									variant="ghost"
+									size="icon"
+									class="h-8 w-8 text-zinc-400 hover:text-white"
+									on:click={() => handleEdit(user)}
+									aria-label="Edit user {user.name || user.email}"
+								>
+									<Edit2 class="h-4 w-4" />
+								</Button>
+								<Button
+									variant="ghost"
+									size="icon"
+									class="h-8 w-8 text-zinc-400 hover:bg-red-500/10 hover:text-red-500"
+									on:click={() => confirmDelete(user)}
+									aria-label="Delete user {user.name || user.email}"
+								>
+									<Trash2 class="h-4 w-4" />
+								</Button>
+							</div>
 						</Table.Cell>
 					</Table.Row>
 				{/each}
@@ -104,3 +142,16 @@
 		</Table.Root>
 	</div>
 </div>
+
+<!-- Delete Confirmation Modal -->
+<!-- Delete Confirmation Modal -->
+{#if showDeleteModal && userToDelete}
+	<DeleteConfirmation
+		itemName={userToDelete.name || userToDelete.email}
+		title="Delete User"
+		idToCheck={userToDelete.id}
+		action="?/delete"
+		on:close={cancelDelete}
+		cancelPath={null}
+	/>
+{/if}

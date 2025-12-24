@@ -2,12 +2,36 @@ import { db } from '$lib/server/db';
 import { galleryGroup, galleryItem } from '$lib/server/db/schema';
 import { count, eq } from 'drizzle-orm';
 
+const CACHE_TTL_MS = 10 * 60 * 1000; // 10 minutes
+let galleryCache: any[] | null = null;
+let galleryCacheTime = 0;
+
+export function invalidateGalleryCache() {
+	galleryCache = null;
+	galleryCacheTime = 0;
+	console.log('[Gallery] Cache invalidated');
+}
+
 export async function getGalleryGroupsWithItems() {
+	const now = Date.now();
+	if (galleryCache && now - galleryCacheTime < CACHE_TTL_MS) {
+		console.log(
+			`[Gallery] Returned from cache (age: ${Math.round((now - galleryCacheTime) / 1000)}s)`
+		);
+		return galleryCache;
+	}
+
+	const start = Date.now();
 	const groups = await db.query.galleryGroup.findMany({
 		with: {
 			items: true
 		}
 	});
+
+	galleryCache = groups;
+	galleryCacheTime = Date.now();
+	console.log(`[Gallery] Loaded from DB in ${Date.now() - start}ms`);
+
 	return groups;
 }
 
@@ -48,6 +72,7 @@ export async function createGalleryGroup(data: { title: string; description: str
 		title: data.title,
 		description: data.description
 	});
+	invalidateGalleryCache();
 }
 
 export async function updateGalleryGroup(id: number, data: { title: string; description: string }) {
@@ -58,10 +83,12 @@ export async function updateGalleryGroup(id: number, data: { title: string; desc
 			description: data.description
 		})
 		.where(eq(galleryGroup.id, id));
+	invalidateGalleryCache();
 }
 
 export async function deleteGalleryGroup(id: number) {
 	await db.delete(galleryGroup).where(eq(galleryGroup.id, id));
+	invalidateGalleryCache();
 }
 
 // CRUD for Gallery Item
@@ -85,6 +112,7 @@ export async function createGalleryItem(data: {
 		googleDriveFileId: data.googleDriveFileId,
 		date: data.date
 	});
+	invalidateGalleryCache();
 }
 
 export async function updateGalleryItem(
@@ -116,6 +144,7 @@ export async function updateGalleryItem(
 	if (data.googleDriveFileId) updateData.googleDriveFileId = data.googleDriveFileId;
 
 	await db.update(galleryItem).set(updateData).where(eq(galleryItem.id, id));
+	invalidateGalleryCache();
 }
 
 export async function deleteGalleryItem(id: number) {
@@ -135,4 +164,5 @@ export async function deleteGalleryItem(id: number) {
 	}
 
 	await db.delete(galleryItem).where(eq(galleryItem.id, id));
+	invalidateGalleryCache();
 }

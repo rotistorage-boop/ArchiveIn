@@ -33,7 +33,7 @@
 </script>
 
 <svelte:head>
-	<title>Archive Management - Campus Life</title>
+	<title>Archive Management | ArchiveIn</title>
 </svelte:head>
 
 <div class="space-y-6 p-6 lg:p-8">

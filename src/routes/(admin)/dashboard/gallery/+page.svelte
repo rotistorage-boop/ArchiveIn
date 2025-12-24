@@ -65,7 +65,7 @@
 </script>
 
 <svelte:head>
-	<title>Gallery Management - Campus Life</title>
+	<title>Gallery Management | ArchiveIn</title>
 </svelte:head>
 
 <div class="space-y-6 p-6 lg:p-8">

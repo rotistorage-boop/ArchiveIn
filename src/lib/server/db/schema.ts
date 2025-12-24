@@ -7,10 +7,12 @@ import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core';
 
 export const user = sqliteTable('user', {
 	id: text('id').primaryKey(),
-	username: text('username').notNull().unique(),
-	passwordHash: text('password_hash').notNull(),
 	email: text('email').notNull().unique(),
-	role: text('role').notNull().default('user')
+	name: text('name'),
+	avatar: text('avatar'),
+	googleId: text('google_id').unique(),
+	role: text('role').notNull().default('user'),
+	createdAt: integer('created_at', { mode: 'timestamp' }).$defaultFn(() => new Date())
 });
 
 export const session = sqliteTable('session', {

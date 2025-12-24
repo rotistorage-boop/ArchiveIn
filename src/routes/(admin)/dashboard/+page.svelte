@@ -44,7 +44,7 @@
 </script>
 
 <svelte:head>
-	<title>Dashboard Overview - Campus Life</title>
+	<title>Dashboard | ArchiveIn</title>
 </svelte:head>
 
 <div class="space-y-6 p-6 lg:p-8">

@@ -7,29 +7,26 @@ import {
 	mataKuliah,
 	academicItem,
 	academicItemBlock,
+	academicItemLink,
 	praktikum,
 	praktikumItem,
 	praktikumItemBlock,
+	praktikumItemLink,
 	asprak,
 	galleryGroup,
 	galleryItem
 } from './schema';
 import type { InferSelectModel } from 'drizzle-orm';
-import { hash } from '@node-rs/argon2';
 
 async function seedUsers() {
 	console.log('  Seeding users...');
-	const passwordHash = await hash('password', {
-		memoryCost: 19456,
-		timeCost: 2,
-		outputLen: 32,
-		parallelism: 1
-	});
+	// Note: With Google OAuth, users are created on first login
+	// This seed creates an initial admin user for testing
 	await db.insert(user).values({
 		id: 'admin',
-		username: 'roti18',
-		passwordHash: passwordHash,
-		email: 'admin@local.host'
+		email: 'rotistorage@gmail.com',
+		name: 'Admin',
+		role: 'admin'
 	});
 }
 
@@ -117,14 +114,12 @@ async function seedAcademicItemsPraktikums(
 				itemId: item.id,
 				type: 'image',
 				imageWebpUrl: 'https://picsum.photos/1200/800.webp',
-				imageOriginalUrl: 'https://picsum.photos/1200/800', // Dummy
+				imageOriginalUrl: 'https://picsum.photos/1200/800',
 				caption: 'Screenshot tugas',
 				order: 1
 			}
 		]);
 
-		// Insert Link
-		const { academicItemLink } = await import('./schema');
 		await db.insert(academicItemLink).values({
 			itemId: item.id,
 			title: 'Google Drive',
@@ -149,8 +144,6 @@ async function seedAcademicItemsPraktikums(
 			})
 			.returning();
 
-		// Insert Link
-		const { praktikumItemLink } = await import('./schema');
 		await db.insert(praktikumItemLink).values({
 			itemId: prakItem.id,
 			title: 'Drive Praktikum',
@@ -184,37 +177,101 @@ async function seedAcademicItemsPraktikums(
 
 async function seedGallery() {
 	console.log('  Seeding gallery...');
-	const [group] = await db
+
+	// Default Group
+	const [defaultGroup] = await db
 		.insert(galleryGroup)
 		.values({
-			title: 'Campus Life',
-			description: 'Dokumentasi perkuliahan'
+			title: 'ArchiveIn',
+			description: 'Dokumentasi perkuliahan utama'
 		})
 		.returning();
 
+	// Studio & Process Group
+	const [groupA] = await db
+		.insert(galleryGroup)
+		.values({
+			title: 'Studio & Process',
+			description: 'Design process, studio sessions, and iterations'
+		})
+		.returning();
+
+	// Campus & Daily Group
+	const [groupB] = await db
+		.insert(galleryGroup)
+		.values({
+			title: 'Campus & Daily',
+			description: 'Daily life documentation'
+		})
+		.returning();
+
+	// Initial Item
 	await db.insert(galleryItem).values({
-		groupId: group.id,
+		groupId: defaultGroup.id,
 		title: 'Suasana Kelas',
-		description: 'Kegiatan perkuliahan',
-		imageWebpUrl: 'https://picsum.photos/800/600.webp',
-		imageOriginalUrl: 'https://picsum.photos/800/600',
-		imagekitFileId: 'dummy_file_id',
-		date: '15/03/2024'
+		description: 'Kegiatan perkuliahan di gedung teknik',
+		imageWebpUrl: 'https://picsum.photos/seed/main/800/600.webp',
+		imageOriginalUrl: 'https://picsum.photos/seed/main/800/600',
+		imagekitFileId: 'dummy_file_id_0',
+		date: '2024-03-15'
 	});
+
+	// Bulk Items
+	const extraItems = [
+		// === GROUP A (10 items)
+		{ groupId: groupA.id, title: 'Wireframe Wall' },
+		{ groupId: groupA.id, title: 'Early Layout Study' },
+		{ groupId: groupA.id, title: 'Spacing Exploration' },
+		{ groupId: groupA.id, title: 'Component Breakdown' },
+		{ groupId: groupA.id, title: 'Prototype Review' },
+		{ groupId: groupA.id, title: 'Interaction Mapping' },
+		{ groupId: groupA.id, title: 'Dark UI Test' },
+		{ groupId: groupA.id, title: 'Iteration Notes' },
+		{ groupId: groupA.id, title: 'Visual Rhythm' },
+		{ groupId: groupA.id, title: 'Final Polish' },
+
+		// === GROUP B (9 items)
+		{ groupId: groupB.id, title: 'Morning Class' },
+		{ groupId: groupB.id, title: 'Hallway Light' },
+		{ groupId: groupB.id, title: 'Study Corner' },
+		{ groupId: groupB.id, title: 'Late Afternoon' },
+		{ groupId: groupB.id, title: 'Discussion Break' },
+		{ groupId: groupB.id, title: 'Empty Classroom' },
+		{ groupId: groupB.id, title: 'Library Silence' },
+		{ groupId: groupB.id, title: 'Sunset Corridor' },
+		{ groupId: groupB.id, title: 'Last Lecture' }
+	];
+
+	await db.insert(galleryItem).values(
+		extraItems.map((item, i) => {
+			const date = new Date();
+			date.setDate(date.getDate() - Math.floor(Math.random() * 365));
+			return {
+				...item,
+				description: `Documentation — ${item.title}`,
+				imageWebpUrl: `https://picsum.photos/seed/gallery-${i + 20}/800/800.webp`,
+				imageOriginalUrl: `https://picsum.photos/seed/gallery-${i + 20}/800/800`,
+				imagekitFileId: `dummy_seed_id_${i + 1}`,
+				date: date.toISOString().split('T')[0]
+			};
+		})
+	);
 }
 
 async function seed() {
-	console.log('🌱 Seeding database with dotenv...');
-	await seedUsers();
-	const { sem1, sem2 } = await seedSemesters();
-	const matkulInserted = await seedMataKuliahs(sem1.id, sem2.id);
-	await seedAcademicItemsPraktikums(matkulInserted);
-	await seedGallery();
-	console.log('✅ Seed selesai (dotenv aktif)');
+	console.log('🌱 Combined Seeding database...');
+	try {
+		await seedUsers();
+		const { sem1, sem2 } = await seedSemesters();
+		const matkulInserted = await seedMataKuliahs(sem1.id, sem2.id);
+		await seedAcademicItemsPraktikums(matkulInserted);
+		await seedGallery();
+		console.log('✅ Combined Seed complete');
+	} catch (error) {
+		console.error('❌ Seeding failed:', error);
+		process.exit(1);
+	}
 	process.exit(0);
 }
 
-seed().catch((e) => {
-	console.error(e);
-	process.exit(1);
-});
+seed();

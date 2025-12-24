@@ -16,7 +16,7 @@
 	// Filter sessions based on search query
 	$: filteredSessions = sessions.filter(
 		(s: SessionWithUser) =>
-			s.user.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
+			(s.user.name || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
 			s.user.email.toLowerCase().includes(searchQuery.toLowerCase())
 	);
 
@@ -26,7 +26,7 @@
 </script>
 
 <svelte:head>
-	<title>Session Management - Campus Life</title>
+	<title>Session Management | ArchiveIn</title>
 </svelte:head>
 
 <div class="space-y-6 p-6 lg:p-8">
@@ -65,10 +65,10 @@
 								<div
 									class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-zinc-800 text-sm font-medium text-white"
 								>
-									{session.user.username.charAt(0).toUpperCase()}
+									{(session.user.name || session.user.email).charAt(0).toUpperCase()}
 								</div>
 								<div class="ml-3">
-									<p class="text-sm font-medium text-white">{session.user.username}</p>
+									<p class="text-sm font-medium text-white">{session.user.name || 'User'}</p>
 									<p class="text-xs text-zinc-500 sm:hidden">{session.user.email}</p>
 								</div>
 							</div>

@@ -6,7 +6,7 @@
 </script>
 
 <DeleteConfirmation
-	itemName={data.session.user?.username || 'Unknown User'}
+	itemName={data.session.user?.name || data.session.user?.email || 'Unknown User'}
 	cancelPath="/dashboard/sessions"
 	title="Confirm Terminate"
 	descriptionPrefix="Are you sure you want to terminate the session for"

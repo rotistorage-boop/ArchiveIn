@@ -1,36 +1,46 @@
 <script lang="ts">
 	import '../layout.css';
-	import favicon from '$lib/assets/favicon.svg';
 	import { onMount, onDestroy } from 'svelte';
-	import Lenis from '@studio-freight/lenis';
+	import { gsap } from 'gsap';
+	import CustomCursor from '$lib/components/ui/CustomCursor.svelte';
+	import WelcomeLoader from '$lib/components/ui/WelcomeLoader.svelte';
 
-	let lenis: Lenis | null = null;
-	let rafId: number;
+	let { children } = $props();
+	let mainContent: HTMLDivElement;
 
 	onMount(() => {
-		lenis = new Lenis({
-			duration: 1.001,
-			easing: (t) => 1 - Math.pow(1 - t, 3),
-			smoothWheel: true,
-			wheelMultiplier: 1,
-			touchMultiplier: 1
-		});
+		// 1. Mobile Check - STRICT DISABLE
+		const mobileCheck = window.matchMedia('(pointer: coarse)').matches || window.innerWidth < 1024;
 
-		const raf = (time: number) => {
-			lenis?.raf(time);
-			rafId = requestAnimationFrame(raf);
-		};
+		// 2. Entry Animation (Desktop Only for Performance)
+		if (!mobileCheck) {
+			document.documentElement.style.scrollBehavior = 'smooth';
 
-		rafId = requestAnimationFrame(raf);
+			// Simple, Clean Entry
+			gsap.from(mainContent, {
+				opacity: 0,
+				scale: 0.98,
+				duration: 0.4,
+				ease: 'power2.out',
+				delay: 0.1 // Slight breath
+			});
+		} else {
+			document.documentElement.style.scrollBehavior = 'auto'; // Force native
+		}
 	});
 
 	onDestroy(() => {
-		if (rafId) cancelAnimationFrame(rafId);
-		lenis?.destroy();
+		if (typeof window !== 'undefined') {
+			document.documentElement.style.scrollBehavior = 'auto'; // Revert
+		}
 	});
-
-	let { children } = $props();
 </script>
 
-<svelte:head><link rel="icon" href={favicon} /></svelte:head>
-{@render children()}
+<svelte:head><link rel="icon" href="/favicon.svg" /></svelte:head>
+
+<CustomCursor />
+<WelcomeLoader />
+
+<div bind:this={mainContent} class="relative w-full">
+	{@render children()}
+</div>

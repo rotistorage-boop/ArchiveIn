@@ -16,7 +16,8 @@
 </script>
 
 <svelte:head>
-	<title>Admin Dashboard - Campus Life</title>
+	<link rel="icon" href="/favicon.svg" />
+	<title>Admin Dashboard - Archive</title>
 </svelte:head>
 
 <div class="min-h-screen bg-black text-white">

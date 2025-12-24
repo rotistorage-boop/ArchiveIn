@@ -19,6 +19,17 @@ import type {
 } from '$lib/types/academic';
 import type { ArchiveItem, DocumentationItem } from '$lib/types/archive';
 
+// In-memory cache for archive tree
+let archiveCache: ArchiveItem[] | null = null;
+let archiveCacheTime: number = 0;
+const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
+
+export function invalidateArchiveCache() {
+	archiveCache = null;
+	archiveCacheTime = 0;
+	console.log('[Archive] Cache invalidated');
+}
+
 // Helper to format type names (e.g., 'tugas_praktikum' -> 'Tugas Praktikum')
 function formatTypeName(str: string): string {
 	if (!str) return 'Unknown';
@@ -237,8 +248,27 @@ function transformSemestersToArchiveItems(semesters: SemesterForArchive[]): Arch
 }
 
 export async function getArchiveTree(): Promise<ArchiveItem[]> {
+	// Return cached data if valid
+	const now = Date.now();
+	if (archiveCache && now - archiveCacheTime < CACHE_TTL_MS) {
+		console.log(
+			`[Archive] Returned from cache (age: ${Math.round((now - archiveCacheTime) / 1000)}s)`
+		);
+		return archiveCache;
+	}
+
+	const start = Date.now();
 	const overview = await getArchiveOverview();
-	return transformSemestersToArchiveItems(overview);
+	const result = transformSemestersToArchiveItems(overview);
+
+	// Update cache
+	archiveCache = result;
+	archiveCacheTime = Date.now();
+
+	console.log(
+		`[Archive] Loaded from DB in ${Date.now() - start}ms, cached for ${CACHE_TTL_MS / 1000}s`
+	);
+	return result;
 }
 
 /* =========================

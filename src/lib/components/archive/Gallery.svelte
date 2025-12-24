@@ -32,7 +32,7 @@
 								desc: group.title,
 								date: item.date
 							})}
-						class="group aspect-square overflow-hidden border-[0.5px] border-gray-900"
+						class="group aspect-square cursor-pointer overflow-hidden border-[0.5px] border-gray-900"
 					>
 						<img
 							src={item.imageWebpUrl}

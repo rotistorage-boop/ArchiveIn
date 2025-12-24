@@ -16,79 +16,67 @@ This project is currently in active development. Features are being continuously
 - Tailwind CSS (Styling)
 - Lucide Icons (Iconography)
 
-## Setup and Running Locally
+# Configuration & Setup
 
-1.  **Clone the repository:**
-    ```bash
-    git clone https://github.com/rotistorage-boop/ArchiveIn.git
-    cd ArchiveIn
-    ```
-2.  **Install dependencies:**
-    ```bash
-    npm install
-    ```
-3.  **Database Setup:**
-    - Ensure you have a `.env` file (you can copy `.env.example`).
-    - Generate and run database migrations:
-      ```bash
-      npm run db:generate
-      npm run db:migrate
-      ```
-    - Seed initial data (this will reset your database content):
-      ```bash
-      npx tsx src/lib/server/db/seed.ts
-      ```
-4.  **Start the development server:**
-    ```bash
-    npm run dev
-    ```
-    Open your browser to `http://localhost:5173` (or the port specified in your terminal).
+## Environment Variables (.env)
+Create a `.env` file in the root directory. You can copy the structure from `.env.example` if available.
 
--
+### Database (Prisma/Turso)
+- `DATABASE_URL`: The connection URL for your database (e.g. `libsql://...`).
+- `DATABASE_AUTH_TOKEN`: The authentication token for Turso/LibSQL.
 
-## Google Drive Configuration (OAuth2)
+### Google Authentication & Services (OAuth2)
+Used for User Login, Google Drive Storage, and Gmail Notifications.
+- `GOOGLE_CLIENT_ID`: OAuth2 Client ID from Google Cloud Console.
+- `GOOGLE_CLIENT_SECRET`: OAuth2 Client Secret.
+- `GOOGLE_REDIRECT_URI`: Callback URL (e.g., `http://localhost:5173/login/google/callback` for dev).
+- `GOOGLE_REFRESH_TOKEN`: Long-lived token to access Drive/Gmail offline (run `npm run get-token` to generate).
 
-This project uses Google Drive as an archival storage service for original high-quality images. It utilizes **OAuth2** with a refresh token to securely access your drive without manual login after setup.
+### Google Drive Storage
+- `GOOGLE_DRIVE_FOLDER_ID`: The ID of the root folder in Google Drive where archives/gallery images will be stored (e.g., `1aBcDeFgHiJkLmNoPqRsTuVwXyZ`).
 
-### Steps to Setup
+### ImageKit (CDN & Optimization)
+- `IMAGEKIT_PUBLIC_KEY`: Public API Key.
+- `IMAGEKIT_PRIVATE_KEY`: Private API Key.
+- `IMAGEKIT_URL_ENDPOINT`: URL Endpoint (e.g., `https://ik.imagekit.io/your_id`).
 
-1.  **Create Project & Credentials:**
-    - Go to [Google Cloud Console](https://console.cloud.google.com/).
-    - Create a new project.
-    - Navigate to **APIs & Services > Library**, search for **Google Drive API** and enable it.
-    - Navigate to **APIs & Services > OAuth consent screen**.
-    - Choose **External**, fill in required app info, and add your email as a **Test User**.
-    - Navigate to **APIs & Services > Credentials**.
-    - Click **+ CREATE CREDENTIALS** > **OAuth client ID**.
-    - Select **Web application**. Add `http://localhost:3000/oauth2callback` to **Authorized redirect URIs**.
-    - Copy your **Client ID** and **Client Secret** to your `.env`.
+### Application Config
+- `ADMIN_EMAILS`: Comma-separated list of emails that have Admin access (e.g., `admin@example.com,dev@example.com`).
 
-2.  **Generate Refresh Token:**
-    - Ensure your `.env` has `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET`.
-    - Run the token generator script:
-      ```bash
-      npx tsx src/scripts/get-google-token.ts
-      ```
-    - Follow the link in your terminal, authorize, and copy the **Code** from the URL bar (the failed redirect page).
-    - Paste the code back into the terminal to get your `GOOGLE_REFRESH_TOKEN`.
+---
 
-3.  **Root Folder Setup:**
-    - Create a folder in your Google Drive (e.g., `Archive Storage`).
-    - Copy the folder ID from the URL (the string after `folders/`).
-    - Save this as `GOOGLE_DRIVE_FOLDER_ID` in your `.env`.
+## Installation & Development
 
-### .env Example
+1. **Install Dependencies**
+   ```bash
+   npm install
+   ```
 
-```env
-# Google Drive (OAuth2)
-GOOGLE_CLIENT_ID="your-client-id.apps.googleusercontent.com"
-GOOGLE_CLIENT_SECRET="your-client-secret"
-GOOGLE_REDIRECT_URI="http://localhost:3000/oauth2callback"
-GOOGLE_REFRESH_TOKEN="1//your-refresh-token"
-GOOGLE_DRIVE_FOLDER_ID="your-folder-id"
+2. **Database Setup**
+   ```bash
+   npx prisma generate
+   npx prisma db push
+   ```
 
-# ImageKit (CDN)
-IMAGEKIT_PUBLIC_KEY="public_..."
-IMAGEKIT_PRIVATE_KEY="private_..."
-IMAGEKIT_URL_ENDPOINT="https://ik.imagekit.io/your_id/"
-```
+3. **Get Google Tokens (One-time Setup)**
+   If you need a `GOOGLE_REFRESH_TOKEN`, run the helper script:
+   ```bash
+   npm run get-token
+   ```
+   Follow the link, authorize, and paste the code. The script will output your Refresh Token.
+
+4. **Run Development Server**
+   ```bash
+   npm run dev
+   ```
+
+## Deployment
+
+### Vercel / Netlify / Node.js
+This project uses `@sveltejs/adapter-auto` (or specific adapter).
+1. Ensure all **Environment Variables** are set in your deployment platform settings.
+2. Build command: `npm run build`.
+3. Start command: `node build` (if using node adapter) or automatic.
+
+### Important Note on Google Tokens
+The `GOOGLE_REFRESH_TOKEN` is critical for uploading to Drive and sending Emails. It expires if unused for 6 months or if revoked. Ensure your Google Cloud Project is set to **Production** (not Testing) to avoid 7-day token expiration.

@@ -1,6 +1,6 @@
 <script>
 	import { page } from '$app/stores';
-	import { AlertCircle, Home } from '@lucide/svelte';
+	import { AlertCircle, Home, LayoutDashboard } from '@lucide/svelte';
 </script>
 
 <div
@@ -13,6 +13,13 @@
 		<h1 class="text-4xl font-bold tracking-tight">{$page.status}</h1>
 		<p class="text-zinc-400">{$page.error?.message || 'Something went wrong.'}</p>
 		<div class="flex justify-center gap-3 pt-4">
+			<a
+				href="/dashboard"
+				class="inline-flex items-center gap-2 rounded-lg bg-white px-4 py-2 font-medium text-black transition-colors hover:bg-zinc-200"
+			>
+				<LayoutDashboard class="h-4 w-4" />
+				Dashboard
+			</a>
 			<a
 				href="/"
 				class="inline-flex items-center gap-2 rounded-lg border border-zinc-700 px-4 py-2 font-medium text-white transition-colors hover:bg-zinc-800"

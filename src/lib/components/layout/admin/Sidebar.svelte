@@ -26,57 +26,56 @@
 	}
 
 	function handleLogout(): void {
-		// TODO: Implement proper logout with API call
-		window.location.href = '/login';
+		window.location.href = '/logout';
 	}
 </script>
 
-<aside class="flex w-64 flex-col border-r border-zinc-800 bg-zinc-950">
+<aside class="flex w-20 flex-col border-r border-zinc-900 bg-black">
 	<!-- Logo -->
-	<div class="border-b border-zinc-800 p-5">
-		<a href="/" class="block">
-			<h1 class="text-xl font-bold text-white">CAMPUS LIFE</h1>
-		</a>
+	<div class="flex h-20 items-center justify-center border-b border-zinc-900">
+		<a href="/" class="block text-xl font-bold text-white transition-opacity hover:opacity-70">A</a>
 	</div>
 
 	<!-- Navigation -->
-	<nav class="flex-1 space-y-1 p-4">
+	<nav class="flex-1 space-y-2 py-6">
 		{#each navItems as item}
-			<a
-				href={item.href}
-				class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors {isActive(
-					item.href,
-					$page.url.pathname
-				)
-					? 'bg-white text-black'
-					: 'text-zinc-400 hover:bg-zinc-900 hover:text-white'}"
-			>
-				<svelte:component this={item.icon} class="h-4 w-4" />
-				{item.label}
-			</a>
+			<div class="flex justify-center">
+				<a
+					href={item.href}
+					title={item.label}
+					class="flex h-10 w-10 items-center justify-center rounded-lg transition-colors {isActive(
+						item.href,
+						$page.url.pathname
+					)
+						? 'bg-white text-black'
+						: 'text-zinc-500 hover:bg-zinc-900 hover:text-white'}"
+				>
+					<svelte:component this={item.icon} class="h-5 w-5" />
+				</a>
+			</div>
 		{/each}
 	</nav>
 
 	<!-- User Profile -->
-	<div class="border-t border-zinc-800 p-4">
-		<div class="mb-3 flex items-center gap-3">
-			<div
-				class="flex h-10 w-10 items-center justify-center rounded-full bg-zinc-800 text-sm font-medium text-white"
-			>
-				{user.username.charAt(0).toUpperCase()}
-			</div>
-			<div class="min-w-0 flex-1">
-				<p class="truncate text-sm font-medium text-white">{user.username}</p>
-				<p class="truncate text-xs text-zinc-500">{user.email}</p>
-			</div>
-		</div>
+	<div class="border-t border-zinc-900 py-6">
+		<div class="flex flex-col items-center gap-4">
+			{#if user.avatar}
+				<img src={user.avatar} alt="" class="h-8 w-8 rounded-full ring-1 ring-zinc-800" />
+			{:else}
+				<div
+					class="flex h-8 w-8 items-center justify-center rounded-full bg-zinc-900 text-xs font-medium text-white"
+				>
+					{(user.name || user.email).charAt(0).toUpperCase()}
+				</div>
+			{/if}
 
-		<button
-			on:click={handleLogout}
-			class="flex w-full items-center justify-center gap-2 rounded-lg px-3 py-2 text-sm text-zinc-400 transition-colors hover:bg-zinc-900 hover:text-white"
-		>
-			<LogOut class="h-4 w-4" />
-			Logout
-		</button>
+			<button
+				on:click={handleLogout}
+				title="Logout"
+				class="flex h-10 w-10 items-center justify-center rounded-lg text-zinc-500 transition-colors hover:bg-red-500/10 hover:text-red-500"
+			>
+				<LogOut class="h-4 w-4" />
+			</button>
+		</div>
 	</div>
 </aside>

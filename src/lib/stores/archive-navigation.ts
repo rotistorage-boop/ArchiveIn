@@ -21,7 +21,7 @@ export interface PhotoData {
 export const currentPage = writable<PageType>('gallery');
 export const navigationPath = writable<string[]>([]);
 export const currentItems = writable<ArchiveItem[]>([]);
-let initialArchiveData: ArchiveItem[] = [];
+export let initialArchiveData: ArchiveItem[] = [];
 
 export const selectedDetail = writable<ArchiveItem | null>(null);
 export const selectedPhoto = writable<PhotoData | null>(null);

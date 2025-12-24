@@ -11,7 +11,7 @@ export async function getSessions(): Promise<SessionWithUser[]> {
 			expiresAt: session.expiresAt,
 			user: {
 				id: user.id,
-				username: user.username,
+				name: user.name,
 				email: user.email
 			}
 		})

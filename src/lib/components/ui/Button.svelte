@@ -8,7 +8,7 @@
 	export { className as class };
 
 	let baseClasses =
-		'inline-flex items-center justify-center font-medium transition-colors disabled:opacity-50 disabled:pointer-events-none ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2';
+		'cursor-pointer inline-flex items-center justify-center font-medium transition-colors disabled:opacity-50 disabled:pointer-events-none ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2';
 
 	let variantClasses = {
 		primary: 'bg-white text-black hover:bg-zinc-200',

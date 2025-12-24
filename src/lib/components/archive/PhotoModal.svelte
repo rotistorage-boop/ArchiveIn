@@ -2,7 +2,7 @@
 	import { selectedPhoto } from '$lib/stores/archive-navigation';
 	import { fade, scale } from 'svelte/transition';
 	import { quintOut } from 'svelte/easing';
-
+	import { X } from '@lucide/svelte';
 	function closeModal() {
 		selectedPhoto.set(null);
 	}
@@ -22,15 +22,14 @@
 		out:fade={{ duration: 500, easing: quintOut }}
 		on:click={closeModal}
 		on:keydown={handleKeydown}
-		role="button"
-		tabindex="0"
-		class="fixed inset-0 z-1000 flex cursor-pointer items-center justify-center bg-black/96"
+		role="presentation"
+		class="fixed inset-0 z-1000 flex items-center justify-center bg-black/96"
 	>
 		<button
 			on:click={closeModal}
-			class="fixed top-8 right-8 z-10 text-xl text-gray-400 transition-all duration-300 hover:rotate-90 hover:text-white"
+			class="button-hover fixed top-8 right-8 z-10 cursor-pointer text-xl text-gray-400 transition-all duration-300 hover:rotate-90 hover:text-white"
 		>
-			×
+			<X />
 		</button>
 
 		<div
@@ -38,8 +37,7 @@
 			out:scale={{ duration: 500, easing: quintOut, start: 0.96 }}
 			on:click|stopPropagation
 			on:keydown|stopPropagation
-			role="button"
-			tabindex="0"
+			role="presentation"
 			class="max-w-[85vw] cursor-default text-center"
 		>
 			<img
