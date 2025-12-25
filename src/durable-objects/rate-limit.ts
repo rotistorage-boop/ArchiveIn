@@ -1,4 +1,4 @@
-export interface Env { }
+export interface Env {}
 
 export interface DurableObjectState {
   storage: {
